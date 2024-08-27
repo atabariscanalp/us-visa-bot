@@ -116,7 +116,7 @@ def run_visa_scraper():
 
     # Initialize the chromediver (must be installed and in PATH)
     # Needed to implement the headless option
-    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
 
     driver.get(BASE_URL + '/users/sign_in')
     log_in(driver)
