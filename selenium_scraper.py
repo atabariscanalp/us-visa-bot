@@ -14,7 +14,9 @@ from telegram import send_message, send_photo
 load_dotenv()
 URL_ID = os.getenv('URL_ID')
 COUNTRY_CODE = os.getenv('COUNTRY_CODE')
-BASE_URL = f'https://ais.usvisa-info.com/en-{COUNTRY_CODE}/niv'
+BASE_URL = f'https://ais.usvisa-info.com/en-tr/niv'
+MAIN_URL = f'https://ais.usvisa-info.com/en-{COUNTRY_CODE}/niv'
+SCHEDULE_URL = os.getenv('SCHEDULE_URL')
 
 
 def log_in(driver):
@@ -71,11 +73,36 @@ def has_website_changed(driver, url, no_appointment_text):
     # If the "no appointment" text is not found return True. A change was found.
     return no_appointment_text not in main_page.text
 
+def getDates(driver):
+    # Find all rows in the table body
+    rows = driver.find_elements(By.XPATH, '//tbody/tr')
 
-def run_visa_scraper(url, no_appointment_text):
+    # Initialize variables to store the dates
+    ank_time = None
+    ist_time = None
+
+    # Iterate through each row to find the city and corresponding date
+    for row in rows:
+        city = row.find_element(By.XPATH, './td[1]').text
+        date = row.find_element(By.XPATH, './td[2]').text.strip()  # Removing any leading/trailing whitespace
+        
+        if city == 'Ankara':
+            ank_time = date
+        elif city == 'Istanbul':
+            ist_time = date
+
+    return ist_time, ank_time
+
+def get_schedule_page(driver):
+    driver.get(SCHEDULE_URL)
+
+def run_visa_scraper():
     # To run Chrome in a virtual display with xvfb (just in Linux)
     # display = Display(visible=0, size=(800, 600))
     # display.start()
+
+    ist_time = None
+    ank_time = None
 
     seconds_between_checks = 10 * 60
 
@@ -91,21 +118,50 @@ def run_visa_scraper(url, no_appointment_text):
     # Needed to implement the headless option
     driver = webdriver.Chrome(options=chrome_options)
 
+    driver.get(BASE_URL + '/users/sign_in')
+    log_in(driver)
+    get_schedule_page(driver)
+
+    first_run = True
+    last_check_time = time.time()
+
     while True:
         current_time = time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())
         print(f'Starting a new check at {current_time}.')
-        if has_website_changed(driver, url, no_appointment_text):
+        print('\n')
+
+        # Refresh the page
+        driver.refresh()
+
+        # store times
+        new_ist_time, new_ank_time = getDates(driver)
+
+        if time.time() - last_check_time >= 3600:  # 3600 seconds = 1 hour
+            send_message("I'm here, everything is working fine.")
+            last_check_time = time.time()  # Reset the timer
+
+        if first_run:
+            print("sending first times...")
+            send_message(f'Available appointment times for İstanbul {ist_time}, for Ankara {ank_time}')
+
+        dates_changed = new_ist_time != ist_time or new_ank_time != ank_time
+
+        if dates_changed:
+            ist_time = new_ist_time
+            ank_time = new_ank_time
+            
             print('A change was found. Notifying it.')
-            send_message('A change was found. Here is an screenshot.')
+            print('\n')
+
+            send_message(f'NEW available appointment time found!!! İstanbul {ist_time}, Ankara {ank_time}')
             send_photo(driver.get_screenshot_as_png())
 
-            # Closing the driver before quicking the script.
-            input('Press enter to quit...')
-            driver.close()
-            exit()
+            if "2024" in ist_time:
+                send_message("CHECK OUT CHECK OUT!!! 2024 DATE FOUND!!")
+                # driver.close()
+                # exit()
+
         else:
-            # print(f'No change was found. Checking again in {seconds_between_checks} seconds.')
-            # time.sleep(seconds_between_checks)
             for seconds_remaining in range(int(seconds_between_checks), 0, -1):
                 sys.stdout.write('\r')
                 sys.stdout.write(
@@ -117,18 +173,8 @@ def run_visa_scraper(url, no_appointment_text):
 
 
 def main():
-    base_url = BASE_URL + f'/schedule/{URL_ID}'
-
-    # Checking for an appointment
-    url = base_url + '/payment'
-    text = 'There are no available appointments at this time.'
-
-    # Checking for a rescheduled
-    # url = base_url + '/appointment'
-    # text = 'FORCING SCREENSHOT'
-    # text = 'There are no available appointments at the selected location.'
-
-    run_visa_scraper(url, text)
+    base_url = BASE_URL
+    run_visa_scraper()
 
 
 if __name__ == "__main__":

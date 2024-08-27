@@ -1,20 +1,25 @@
 import os
 
-import requests
+import requests 
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('TOKEN')
-CHAT_ID = os.getenv('CHAT_ID')
+# TOKEN = os.getenv('TOKEN')
+# CHAT_ID = os.getenv('CHAT_ID')
+
+TOKEN = "7495129379:AAHMwBN64yZP45hN9NsUoJHv49YTJFbelEQ"
+CHAT_ID = "1427905077"
 
 
 def send_message(text):
+    print("sending message..")
     url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
     parameters = {'chat_id': CHAT_ID, 'text': text}
     return requests.post(url, parameters)
 
 
 def send_photo(photo_file):
+    print("sending pic..")
     url = f'https://api.telegram.org/bot{TOKEN}/sendPhoto'
     parameters = {'chat_id': CHAT_ID}
     return requests.post(url, parameters, files={'photo': photo_file})
