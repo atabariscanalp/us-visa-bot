@@ -25,12 +25,15 @@ def log_in(driver):
         return
 
     print('Logging in.')
+    time.sleep(5)
 
     # Clicking the first prompt, if there is one
     try:
         driver.find_element(By.XPATH, '/html/body/div/div[3]/div/button').click()
     except:
         pass
+
+    time.sleep(2)
     # Filling the user and password
     user_box = driver.find_element(By.NAME, 'user[email]')
     user_box.send_keys(os.environ.get('USERNAME'))
