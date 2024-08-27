@@ -13,12 +13,8 @@ from telegram import send_message, send_photo
 
 load_dotenv()
 
-URL_ID = os.environ.get('URL_ID')
-COUNTRY_CODE = os.environ.get('COUNTRY_CODE')
 BASE_URL = f'https://ais.usvisa-info.com/en-tr/niv'
-MAIN_URL = f'https://ais.usvisa-info.com/en-{COUNTRY_CODE}/niv'
 SCHEDULE_URL = os.environ.get('SCHEDULE_URL')
-
 
 def log_in(driver):
     if driver.current_url != BASE_URL + '/users/sign_in':
