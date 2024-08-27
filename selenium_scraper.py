@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from telegram import send_message, send_photo
 
 load_dotenv()
+
 URL_ID = os.getenv('URL_ID')
 COUNTRY_CODE = os.getenv('COUNTRY_CODE')
 BASE_URL = f'https://ais.usvisa-info.com/en-tr/niv'

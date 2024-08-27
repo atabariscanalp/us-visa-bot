@@ -4,12 +4,8 @@ import requests
 from dotenv import load_dotenv
 
 load_dotenv()
-# TOKEN = os.getenv('TOKEN')
-# CHAT_ID = os.getenv('CHAT_ID')
-
-TOKEN = "7495129379:AAHMwBN64yZP45hN9NsUoJHv49YTJFbelEQ"
-CHAT_ID = "1427905077"
-
+TOKEN = os.getenv('TOKEN')
+CHAT_ID = os.getenv('CHAT_ID')
 
 def send_message(text):
     print("sending message..")
