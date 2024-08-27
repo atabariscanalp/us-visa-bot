@@ -15,6 +15,8 @@ load_dotenv()
 
 BASE_URL = f'https://ais.usvisa-info.com/en-tr/niv'
 SCHEDULE_URL = os.environ.get('SCHEDULE_URL')
+CHROME_PATH = os.environ.get('CHROME_PATH')
+CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH')
 
 def log_in(driver):
     if driver.current_url != BASE_URL + '/users/sign_in':
@@ -105,15 +107,16 @@ def run_visa_scraper():
 
     # Setting Chrome options to run the scraper headless.
     chrome_options = Options()
+    chrome_options.binary_location = CHROME_PATH
     # chrome_options.add_argument("--disable-extensions")
-    # chrome_options.add_argument("--disable-gpu")
-    # chrome_options.add_argument("--no-sandbox") # linux only
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox") # linux only
     if os.environ.get('HEADLESS') == 'True':
         chrome_options.add_argument("--headless")  # Comment for visualy debugging
 
     # Initialize the chromediver (must be installed and in PATH)
     # Needed to implement the headless option
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=chrome_options)
 
     driver.get(BASE_URL + '/users/sign_in')
     log_in(driver)
