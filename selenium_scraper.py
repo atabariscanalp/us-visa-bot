@@ -35,9 +35,9 @@ def log_in(driver):
 
     time.sleep(2)
     # Filling the user and password
-    user_box = driver.find_element(By.NAME, 'user[email]')
+    user_box = driver.find_element(By.XPATH, '//*[@id="user_email"]')
     user_box.send_keys(os.environ.get('USERNAME'))
-    password_box = driver.find_element(By.NAME, 'user[password]')
+    password_box = driver.find_element(By.XPATH, '//*[@id="user_password"]')
     password_box.send_keys(os.environ.get('PASSWORD'))
     # Clicking the checkbox
     driver.find_element(By.XPATH, '//*[@id="sign_in_form"]/div/label/div').click()
