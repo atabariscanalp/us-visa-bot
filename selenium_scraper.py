@@ -174,7 +174,6 @@ def run_visa_scraper():
 
 
 def main():
-    base_url = BASE_URL
     run_visa_scraper()
 
 
