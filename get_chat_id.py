@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = os.environ.get('TOKEN')
 
 def get_updates():
     url = f'https://api.telegram.org/bot{TOKEN}/getUpdates'

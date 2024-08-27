@@ -13,11 +13,11 @@ from telegram import send_message, send_photo
 
 load_dotenv()
 
-URL_ID = os.getenv('URL_ID')
-COUNTRY_CODE = os.getenv('COUNTRY_CODE')
+URL_ID = os.environ.get('URL_ID')
+COUNTRY_CODE = os.environ.get('COUNTRY_CODE')
 BASE_URL = f'https://ais.usvisa-info.com/en-tr/niv'
 MAIN_URL = f'https://ais.usvisa-info.com/en-{COUNTRY_CODE}/niv'
-SCHEDULE_URL = os.getenv('SCHEDULE_URL')
+SCHEDULE_URL = os.environ.get('SCHEDULE_URL')
 
 
 def log_in(driver):
@@ -35,9 +35,9 @@ def log_in(driver):
         pass
     # Filling the user and password
     user_box = driver.find_element(By.NAME, 'user[email]')
-    user_box.send_keys(os.getenv('USERNAME'))
+    user_box.send_keys(os.environ.get('USERNAME'))
     password_box = driver.find_element(By.NAME, 'user[password]')
-    password_box.send_keys(os.getenv('PASSWORD'))
+    password_box.send_keys(os.environ.get('PASSWORD'))
     # Clicking the checkbox
     driver.find_element(By.XPATH, '//*[@id="sign_in_form"]/div/label/div').click()
     # Clicking 'Sign in'
@@ -112,7 +112,7 @@ def run_visa_scraper():
     # chrome_options.add_argument("--disable-extensions")
     # chrome_options.add_argument("--disable-gpu")
     # chrome_options.add_argument("--no-sandbox") # linux only
-    if os.getenv('HEADLESS') == 'True':
+    if os.environ.get('HEADLESS') == 'True':
         chrome_options.add_argument("--headless")  # Comment for visualy debugging
 
     # Initialize the chromediver (must be installed and in PATH)
