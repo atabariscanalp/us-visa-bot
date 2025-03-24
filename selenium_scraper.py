@@ -139,8 +139,6 @@ def run_visa_scraper():
         # store times
         new_ist_time, new_ank_time = getDates(driver)
 
-        # test comment
-
         if time.time() - last_check_time >= 3600:  # 3600 seconds = 1 hour
             send_message("I'm here, everything is working fine.")
             last_check_time = time.time()  # Reset the timer
